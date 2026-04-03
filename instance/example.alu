@@ -1,0 +1,157 @@
+# ===============================================
+# VeriLang Example — exercises every construct
+# ===============================================
+
+defmodule logic-demo
+
+# --- Using declarations -----------------------
+using standard-lib
+using math-utils
+
+# --- 5.2  Space declarations ------------------
+defspace proposition
+end
+
+defspace arithmetic < proposition
+end
+
+# --- 5.3  Operator declarations ---------------
+defoperator neg : proposition -> proposition
+end
+
+defoperator and : proposition -> proposition -> proposition
+  [associative commutative]
+end
+
+defoperator or : proposition -> proposition -> proposition
+  [associative commutative]
+end
+
+defoperator implies : proposition -> proposition -> proposition
+end
+
+defoperator double : arithmetic -> arithmetic
+end
+
+defoperator identity : arithmetic -> arithmetic
+end
+
+# --- 5.5  Variable declarations ---------------
+defvar p : proposition, q : proposition, r : proposition
+end
+
+defvar x : arithmetic, y : arithmetic
+end
+
+# --- 5.6  Rule declarations -------------------
+
+# Double negation elimination
+defrule (neg (neg p)) -> (identity p)
+end
+
+# Implication elimination
+defrule (implies p q) -> (or (neg p) q)
+end
+
+# Double operator
+defrule (double x) -> (and x x)
+end
+
+# --- 5.7  Expression declarations -------------
+
+# Simple propositional variables
+defexpression p and q
+end
+
+# Implication
+defexpression p => q
+end
+
+# Equivalence
+defexpression p and q => r or neg p
+end
+
+# Application with rewrite rule
+defexpression (implies p q)
+end
+
+# Nested negation — triggers double-negation rule
+defexpression neg neg r
+end
+
+# Application of double
+defexpression (double x)
+end
+
+# Integer arithmetic
+defexpression 2 + 3 * 4
+end
+
+# Power
+defexpression 2 ** 10
+end
+
+# Subtraction and addition
+defexpression 10 - 3 + 2
+end
+
+# Division
+defexpression 10 / 3
+end
+
+# Modulo
+defexpression 10 % 3
+end
+
+# Float literal
+defexpression 3.14
+end
+
+# Float with scientific notation
+defexpression 1.5e10
+end
+
+# Char literal
+defexpression 'a'
+end
+
+# Relational operators
+defexpression 5 <= 10
+end
+
+defexpression 3 <> 4
+end
+
+defexpression 2 + 1 = 3
+end
+
+defexpression 4 > 2
+end
+
+defexpression 1 < 5
+end
+
+defexpression 7 >= 7
+end
+
+# Equivalence operator
+defexpression p ≡ q
+end
+
+# Quantified expressions
+defexpression forall x in arithmetic . x = x
+end
+
+defexpression exists y in arithmetic . y + 1 > y
+end
+
+# Application in expression context
+defexpression (identity x)
+end
+
+# Complex expression with attributes
+defexpression p and q => r or neg p
+  [theorem priority: high]
+end
+
+end
