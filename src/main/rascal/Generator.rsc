@@ -13,10 +13,10 @@ import Implode;
 // ============================================================
 
 void main() {
-    cst = parseProgram(|project://ple-elementos-2/instance/example.alu|);
+    cst = parseProgram(|project://ple_elementos_2/instance/example.alu|);
     result = generate(cst);
     println(result);
-    writeFile(|project://ple-elementos-2/instance/output/verilang-output.txt|, result);
+    writeFile(|project://ple_elementos_2/instance/output/verilang-output.txt|, result);
 }
 
 str generate(cast) {

@@ -10,7 +10,7 @@ import Relation;
 import Syntax;
 import Generator;
 
-PathConfig pcfg = getProjectPathConfig(|project://ple-elementos-2|);
+PathConfig pcfg = getProjectPathConfig(|project://ple_elementos_2|);
 Language verilangLang = language(pcfg, "VeriLang", "alu", "Plugin", "contribs");
 
 data Command = generateOutput(Program p);
@@ -30,7 +30,7 @@ set[LanguageService] contribs() = {
 value exec(generateOutput(Program p)) {
     rVal = generate(p);
     println(rVal);
-    loc outputFile = |project://ple-elementos-2/instance/output/verilang-output.txt|;
+    loc outputFile = |project://ple_elementos_2/instance/output/verilang-output.txt|;
     writeFile(outputFile, rVal);
     edit(outputFile);
     return ("result": true);
