@@ -1,6 +1,6 @@
 # ple_elementos_2
 
-Este repositorio es un trabajo con **Rascal** desarrollando el lenguaje de **VeriLang**: hay una gramática para archivos `.alu`, un parser que construye el árbol concreto, una fase de **implosión** al AST (`AST.rsc`) y un módulo **`Generator`** que recorre ese AST y produce un informe en texto: resumen del módulo (espacios, operadores, variables, reglas `defrule`) y, para cada `defexpression`, muestra la expresión original, pasos de reescritura cuando aplica una regla, y en algunos casos evaluación aritmética simple.
+Este repositorio es un trabajo con Rascal desarrollando el lenguaje de VeriLang: hay una gramática para archivos `.alu`, un parser que construye el árbol concreto, pasa al AST (`AST.rsc`) y un módulo`Generator` que recorre ese AST y produce un informe en texto: resumen del módulo (espacios, operadores, variables, reglas `defrule`) y, para cada `defexpression`, muestra la expresión original, pasos de reescritura cuando aplica una regla, y en algunos casos evaluación aritmética simple.
 
 ## Requisitos
 
@@ -64,10 +64,4 @@ java -cp "target/classes:$(cat /tmp/ple_cp.txt)" org.rascalmpl.shell.RascalShell
 
 **Nota:** con rutas **relativas**, si cambias de carpeta con `cd` antes de correr Java, la ruta se interpreta desde **esa** ubicación. Con rutas **absolutas** da igual desde qué carpeta ejecutes el comando.
 
-Si no pasas ningún argumento, el comando equivale a usar `instance/example.alu` (relativo al directorio de trabajo actual).
-
-## Estructura del código y datos
-
-- `src/main/rascal/` — gramática (`Syntax.rsc`), parser, implosión, AST y lógica del generador (`Generator.rsc`), entre otros.
-- `instance/` — fuentes `.alu` de ejemplo o de prueba.
-- `instance/output/verilang-output.txt` — última salida generada por `Generator`.
+Si no pasas ningún argumento, el comando equivale a usar `instance/example.alu` (relativo al directorio de trabajo actual) :)
