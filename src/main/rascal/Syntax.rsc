@@ -20,11 +20,11 @@ syntax UsingDecl
     = usingDecl: "using" Identifier name;
 
 syntax ModuleElement 
-    = spaceDeclElem:      SpaceDecl decl
-    | operatorDeclElem:   OperatorDecl decl
-    | varDeclElem:        VarDecl decl
-    | ruleDeclElem:       RuleDecl decl
-    | expressionDeclElem: ExpressionDecl decl;
+    = spaceDeclElem:      SpaceDecl spaceDecl
+    | operatorDeclElem:   OperatorDecl operatorDecl
+    | varDeclElem:        VarDecl varDecl
+    | ruleDeclElem:       RuleDecl ruleDecl
+    | expressionDeclElem: ExpressionDecl expressionDecl;
 
 // === 5.2 Space Declaration ===
 
@@ -61,9 +61,10 @@ syntax VarDef
 // === 5.6 Rule Declaration ===
 
 syntax RuleDecl 
-    = ruleDecl: "defrule" OperatorApplication lhs "-\>" OperatorApplication rhs "end";
+    = ruleDecl: "defrule" GramOperatorApplication lhs "-\>" GramOperatorApplication rhs "end";
 
-syntax OperatorApplication 
+// Name distinct from AST data OperatorApplication (Parser transitively imports Syntax into Generator).
+syntax GramOperatorApplication 
     = operatorApplication: "(" OpName op Expression+ args ")";
 
 // === 5.7 Expression Declaration ===
@@ -101,9 +102,9 @@ syntax Expression
     | application:      "(" Identifier op Expression+ args ")"
     | quantifiedForall: "forall" Identifier var "in" Identifier domain "." Expression body
     | quantifiedExists: "exists" Identifier var "in" Identifier domain "." Expression body
-    | intLit:           IntLiteral
-    | floatLit:         FloatLiteral
-    | charLit:          CharLiteral
+    | intLit:           IntLiteral intVal
+    | floatLit:         FloatLiteral floatRaw
+    | charLit:          CharLiteral charVal
     | bracket           "(" Expression ")"
     ;
 
@@ -119,7 +120,8 @@ lexical IntLiteral
     = @category="Constant" [0-9]+ !>> [0-9.];
 
 lexical FloatLiteral 
-    = @category="Constant" [0-9]+ "." [0-9]+ ([eE] [+\-]? [0-9]+)? !>> [0-9];
+    = [0-9]+ "." [0-9]+ [eE] [+\-]? [0-9]+ !>> [0-9]
+    | [0-9]+ "." [0-9]+ !>> [0-9.eE];
 
 lexical CharLiteral 
     = @category="StringLiteral" "\'" ![\'\n] "\'";

@@ -4,23 +4,25 @@ import IO;
 import List;
 import String;
 import AST;
-import Syntax;
 import Parser;
 import Implode;
+import util::SystemAPI;
 
 // ============================================================
 // Entry points
 // ============================================================
 
-void main() {
-    cst = parseProgram(|project://ple_elementos_2/instance/example.alu|);
+void main(list[str] args) {
+    loc root = |file:///| + getSystemProperty("user.dir") + "/";
+    loc input = size(args) > 0 ? root + args[0] : root + "instance/example.alu";
+    cst = parseProgram(input);
     result = generate(cst);
     println(result);
-    writeFile(|project://ple_elementos_2/instance/output/verilang-output.txt|, result);
+    writeFile(root + "instance/output/verilang-output.txt", result);
 }
 
 str generate(cast) {
-    ast = implodeProgram(cast);
+    ast = implodeProgram(cast.top);
     return generateFromAST(ast);
 }
 
@@ -76,11 +78,11 @@ str generateElements(list[ModuleElement] elems, list[Rule] rules) {
 
 str generateElement(ModuleElement elem, list[Rule] rules) {
     switch (elem) {
-        case spaceDeclElem(decl):      return generateSpace(decl);
-        case operatorDeclElem(decl):   return generateOperator(decl);
-        case varDeclElem(decl):        return generateVar(decl);
-        case ruleDeclElem(decl):       return generateRule(decl);
-        case expressionDeclElem(decl): return generateExpression(decl, rules);
+        case spaceDeclElem(sd):      return generateSpace(sd);
+        case operatorDeclElem(od):   return generateOperator(od);
+        case varDeclElem(vd):        return generateVar(vd);
+        case ruleDeclElem(rd):       return generateRule(rd);
+        case expressionDeclElem(ed): return generateExpression(ed, rules);
     }
     return "";
 }
@@ -179,8 +181,8 @@ str ppExpr(application(op, args))         = "(<op> <intercalate(" ", [ ppExprArg
 str ppExpr(quantifiedForall(v, d, body))  = "forall <v> in <d>. <ppExpr(body)>";
 str ppExpr(quantifiedExists(v, d, body))  = "exists <v> in <d>. <ppExpr(body)>";
 str ppExpr(intLit(n))          = "<n>";
-str ppExpr(floatLit(raw))      = raw;
-str ppExpr(charLit(c))         = c;
+str ppExpr(floatLit(fr))       = fr;
+str ppExpr(charLit(cv))        = cv;
 
 default str ppExpr(Expression e) = "??";
 

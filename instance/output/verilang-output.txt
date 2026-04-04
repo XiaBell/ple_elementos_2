@@ -1,0 +1,120 @@
+=== VeriLang Module: logic-demo ===
+
+Using: standard-lib
+Using: math-utils
+Space: proposition
+Space: arithmetic extends proposition
+Operator: neg : proposition -> proposition
+Operator: and : proposition -> proposition -> proposition [associative, commutative]
+Operator: or : proposition -> proposition -> proposition [associative, commutative]
+Operator: implies : proposition -> proposition -> proposition
+Operator: double : arithmetic -> arithmetic
+Operator: identity : arithmetic -> arithmetic
+Variables: p : proposition, q : proposition, r : proposition
+Variables: x : arithmetic, y : arithmetic
+Rule: (neg (neg p)) -> (identity p)
+Rule: (implies p q) -> (or (neg p) q)
+Rule: (double x) -> (and x x)
+Expression:
+  original:  p and q
+  rewritten: p and q
+  result:    p and q
+Expression:
+  original:  p => q
+  rewritten: p => q
+  result:    p => q
+Expression:
+  original:  p and ((q => r) or (neg p))
+  rewritten: p and ((q => r) or (neg p))
+  result:    p and ((q => r) or (neg p))
+Expression:
+  original:  (implies p q)
+  rewritten: (neg p) or q
+  result:    (neg p) or q
+Expression:
+  original:  neg (neg r)
+  rewritten: (identity r)
+  result:    (identity r)
+Expression:
+  original:  (double x)
+  rewritten: x and x
+  result:    x and x
+Expression:
+  original:  (2 + 3) * 4
+  rewritten: (2 + 3) * 4
+  evaluated: 20
+  result:    20
+Expression:
+  original:  2 ** 10
+  rewritten: 2 ** 10
+  evaluated: 1024
+  result:    1024
+Expression:
+  original:  (10 - 3) + 2
+  rewritten: (10 - 3) + 2
+  evaluated: 9
+  result:    9
+Expression:
+  original:  10 / 3
+  rewritten: 10 / 3
+  evaluated: 3
+  result:    3
+Expression:
+  original:  10 % 3
+  rewritten: 10 % 3
+  evaluated: 1
+  result:    1
+Expression:
+  original:  3.14
+  result:    3.14
+Expression:
+  original:  1.5e10
+  result:    1.5e10
+Expression:
+  original:  'a'
+  result:    'a'
+Expression:
+  original:  5 <= 10
+  rewritten: 5 <= 10
+  result:    5 <= 10
+Expression:
+  original:  3 <> 4
+  rewritten: 3 <> 4
+  result:    3 <> 4
+Expression:
+  original:  2 + (1 = 3)
+  rewritten: 2 + (1 = 3)
+  result:    2 + (1 = 3)
+Expression:
+  original:  4 > 2
+  rewritten: 4 > 2
+  result:    4 > 2
+Expression:
+  original:  1 < 5
+  rewritten: 1 < 5
+  result:    1 < 5
+Expression:
+  original:  7 >= 7
+  rewritten: 7 >= 7
+  result:    7 >= 7
+Expression:
+  original:  p ≡ q
+  rewritten: p ≡ q
+  result:    p ≡ q
+Expression:
+  original:  forall x in arithmetic. x = x
+  rewritten: forall x in arithmetic. x = x
+  result:    forall x in arithmetic. x = x
+Expression:
+  original:  exists y in arithmetic. y + (1 > y)
+  rewritten: exists y in arithmetic. y + (1 > y)
+  result:    exists y in arithmetic. y + (1 > y)
+Expression:
+  original:  (identity x)
+  rewritten: (identity x)
+  result:    (identity x)
+Expression:
+  original:  p and ((q => r) or (neg p))
+  rewritten: p and ((q => r) or (neg p))
+  result:    p and ((q => r) or (neg p))
+ [theorem, priority: high]=== End Module ===

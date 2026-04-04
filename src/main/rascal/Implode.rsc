@@ -8,4 +8,4 @@ import ParseTree;
 import Node;
 
 public Program implodeProgram(Tree pt) = implode(#Program, pt);
-public Program loadProgram(loc l) = implodeProgram(parseProgram(l));
+public Program loadProgram(loc l) = implodeProgram(parseProgram(l).top);

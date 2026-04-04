@@ -10,11 +10,11 @@ data UsingDecl
     = usingDecl(str name);
 
 data ModuleElement 
-    = spaceDeclElem(SpaceDecl decl)
-    | operatorDeclElem(OperatorDecl decl)
-    | varDeclElem(VarDecl decl)
-    | ruleDeclElem(RuleDecl decl)
-    | expressionDeclElem(ExpressionDecl decl);
+    = spaceDeclElem(SpaceDecl spaceDecl)
+    | operatorDeclElem(OperatorDecl operatorDecl)
+    | varDeclElem(VarDecl varDecl)
+    | ruleDeclElem(RuleDecl ruleDecl)
+    | expressionDeclElem(ExpressionDecl expressionDecl);
 
 data SpaceDecl 
     = spaceDeclExtends(str name, str parent)
@@ -70,6 +70,6 @@ data Expression
     | application(str op, list[Expression] args)
     | quantifiedForall(str var, str domain, Expression body)
     | quantifiedExists(str var, str domain, Expression body)
-    | intLit(int val)
-    | floatLit(str raw)
-    | charLit(str val);
+    | intLit(int intVal)
+    | floatLit(str floatRaw)
+    | charLit(str charVal);
