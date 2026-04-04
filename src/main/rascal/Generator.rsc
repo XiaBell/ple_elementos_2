@@ -12,9 +12,20 @@ import util::SystemAPI;
 // Entry points
 // ============================================================
 
+loc inputLoc(str path) {
+    str n = replaceAll(path, "\\", "/");
+    if (size(n) > 0 && startsWith(n, "/")) {
+        return |file:///| + substring(n, 1);
+    }
+    if (/^[a-zA-Z]:\/.*/ := n) {
+        return |file:///| + n;
+    }
+    return |file:///| + getSystemProperty("user.dir") + "/" + n;
+}
+
 void main(list[str] args) {
     loc root = |file:///| + getSystemProperty("user.dir") + "/";
-    loc input = size(args) > 0 ? root + args[0] : root + "instance/example.alu";
+    loc input = size(args) > 0 ? inputLoc(args[0]) : root + "instance/example.alu";
     cst = parseProgram(input);
     result = generate(cst);
     println(result);
