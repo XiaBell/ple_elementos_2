@@ -54,7 +54,7 @@ Ejemplo con un archivo **fuera** del repositorio, usando ruta absoluta (macOS / 
 java -cp "target/classes:$(cat /tmp/ple_cp.txt)" org.rascalmpl.shell.RascalShell Generator /Users/tu_usuario/Documentos/verilang/prueba.alu
 ```
 
-En la misma terminal puedes usar `$(pwd)` o arrastrar el archivo al terminal para que el sistema pegue la ruta completa. Si escribes `~/Documentos/x.alu`, normalmente el **shell** expande `~` antes de que llegue a Java; si pones la ruta entre comillas simples y el shell no expande, usa la ruta absoluta explícita.
+En la misma terminal puedes usar `$(pwd)` o arrastrar el archivo al terminal para que el sistema pegue la ruta completa.
 
 Ejemplo con otra carpeta **dentro** del mismo proyecto, por ejemplo `pruebas/caso1.alu`:
 
