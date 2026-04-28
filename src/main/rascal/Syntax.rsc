@@ -23,6 +23,7 @@ syntax ModuleElement
     = spaceDeclElem:      SpaceDecl spaceDecl
     | operatorDeclElem:   OperatorDecl operatorDecl
     | varDeclElem:        VarDecl varDecl
+    | dataDeclElem:       DataDecl dataDecl
     | ruleDeclElem:       RuleDecl ruleDecl
     | expressionDeclElem: ExpressionDecl expressionDecl;
 
@@ -58,6 +59,11 @@ syntax VarDecl
 syntax VarDef 
     = varDef: Identifier name ":" Type typ;
 
+// === 5.x Data structure declaration ===
+
+syntax DataDecl
+    = dataDecl: "defdata" Identifier name ":" Type elemType "=" "{" {Identifier ","}* elems "}" "end";
+
 // === 5.6 Rule Declaration ===
 
 syntax RuleDecl 
@@ -91,13 +97,14 @@ syntax Expression
           addExpr: Expression "+" Expression
         | subExpr: Expression "-" Expression
       )
+    > right powExpr: Expression "**" Expression
     > left (
-          powExpr: Expression "**" Expression
-        | mulExpr: Expression "*"  Expression
+          mulExpr: Expression "*"  Expression
         | divExpr: Expression "/"  Expression
         | modExpr: Expression "%"  Expression
       )
     > negExpr: "neg" Expression
+    > right annotated: Expression ":" Type
     > idExpr:           Identifier name
     | application:      "(" Identifier op Expression+ args ")"
     | quantifiedForall: "forall" Identifier var "in" Identifier domain "." Expression body
@@ -105,16 +112,18 @@ syntax Expression
     | intLit:           IntLiteral intVal
     | floatLit:         FloatLiteral floatRaw
     | charLit:          CharLiteral charVal
+    | boolLit:          BoolLiteral boolRaw
+    | stringLit:        StringLiteral stringVal
     | bracket           "(" Expression ")"
     ;
 
 // === 5.10 Tokens & Literals ===
 
 lexical Identifier 
-    = ([a-z][a-z0-9]*("-"[a-z0-9][a-z0-9]*)* !>> [a-z0-9]) \ AllKeywords;
+    = ([a-zA-Z][a-zA-Z0-9]*("-"[a-zA-Z0-9][a-zA-Z0-9]*)* !>> [a-zA-Z0-9]) \ AllKeywords;
 
 lexical OpName 
-    = ([a-z][a-z0-9]*("-"[a-z0-9][a-z0-9]*)* !>> [a-z0-9]) \ StructKeywords;
+    = ([a-zA-Z][a-zA-Z0-9]*("-"[a-zA-Z0-9][a-zA-Z0-9]*)* !>> [a-zA-Z0-9]) \ StructKeywords;
 
 lexical IntLiteral 
     = @category="Constant" [0-9]+ !>> [0-9.];
@@ -126,13 +135,21 @@ lexical FloatLiteral
 lexical CharLiteral 
     = @category="StringLiteral" "\'" ![\'\n] "\'";
 
+lexical BoolLiteral
+    = @category="Keyword" "true" !>> [a-zA-Z0-9]
+    | @category="Keyword" "false" !>> [a-zA-Z0-9];
+
+lexical StringLiteral
+    = @category="StringLiteral" "\"" ![\"\n]* "\"";
+
 keyword AllKeywords 
     = "defmodule" | "using" | "defspace" | "defrule" | "end"
-    | "defoperator" | "defexpression" | "defvar" | "defer"
+    | "defoperator" | "defexpression" | "defvar" | "defdata" | "defer"
     | "forall" | "exists" | "in"
-    | "and" | "or" | "neg";
+    | "and" | "or" | "neg"
+    | "true" | "false";
 
 keyword StructKeywords 
     = "defmodule" | "using" | "defspace" | "defrule" | "end"
-    | "defoperator" | "defexpression" | "defvar" | "defer"
+    | "defoperator" | "defexpression" | "defvar" | "defdata" | "defer"
     | "forall" | "exists" | "in";

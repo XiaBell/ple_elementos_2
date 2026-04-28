@@ -12,6 +12,8 @@ Operator: double : arithmetic -> arithmetic
 Operator: identity : arithmetic -> arithmetic
 Variables: p : proposition, q : proposition, r : proposition
 Variables: x : arithmetic, y : arithmetic
+Variables: a : Int, b : Int, c : Int
+Variables: flag : Bool
 Rule: (neg (neg p)) -> (identity p)
 Rule: (implies p q) -> (or (neg p) q)
 Rule: (double x) -> (and x x)
@@ -74,6 +76,12 @@ Expression:
   original:  'a'
   result:    'a'
 Expression:
+  original:  true : Bool
+  result:    true : Bool
+Expression:
+  original:  "hola" : String
+  result:    "hola" : String
+Expression:
   original:  5 <= 10
   rewritten: 5 <= 10
   result:    5 <= 10
@@ -82,9 +90,10 @@ Expression:
   rewritten: 3 <> 4
   result:    3 <> 4
 Expression:
-  original:  2 + (1 = 3)
-  rewritten: 2 + (1 = 3)
-  result:    2 + (1 = 3)
+  original:  (2 + 1) = 3
+  rewritten: (2 + 1) = 3
+  evaluated: 3 = 3
+  result:    3 = 3
 Expression:
   original:  4 > 2
   rewritten: 4 > 2
@@ -106,9 +115,9 @@ Expression:
   rewritten: forall x in arithmetic. x = x
   result:    forall x in arithmetic. x = x
 Expression:
-  original:  exists y in arithmetic. y + (1 > y)
-  rewritten: exists y in arithmetic. y + (1 > y)
-  result:    exists y in arithmetic. y + (1 > y)
+  original:  exists y in arithmetic. (y + 1) > y
+  rewritten: exists y in arithmetic. (y + 1) > y
+  result:    exists y in arithmetic. (y + 1) > y
 Expression:
   original:  (identity x)
   rewritten: (identity x)

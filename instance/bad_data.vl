@@ -1,0 +1,20 @@
+# Minimal program to show TypeCheck errors for defdata
+
+defmodule bad-demo
+
+defspace MySpace
+end
+
+defvar x : Int
+end
+
+# ERROR 1: y does not exist in defvar
+defdata D1 : Int = { x, y } end
+
+# ERROR 2: x exists but has wrong type for Bool element type
+defdata D2 : Bool = { x } end
+
+defexpression x : Int
+end
+
+end

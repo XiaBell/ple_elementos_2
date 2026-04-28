@@ -13,6 +13,7 @@ data ModuleElement
     = spaceDeclElem(SpaceDecl spaceDecl)
     | operatorDeclElem(OperatorDecl operatorDecl)
     | varDeclElem(VarDecl varDecl)
+    | dataDeclElem(DataDecl dataDecl)
     | ruleDeclElem(RuleDecl ruleDecl)
     | expressionDeclElem(ExpressionDecl expressionDecl);
 
@@ -38,6 +39,9 @@ data VarDecl
 
 data VarDef 
     = varDef(str name, Type typ);
+
+data DataDecl
+    = dataDecl(str name, Type elemType, list[str] elems);
 
 data RuleDecl 
     = ruleDecl(OperatorApplication lhs, OperatorApplication rhs);
@@ -70,6 +74,9 @@ data Expression
     | application(str op, list[Expression] args)
     | quantifiedForall(str var, str domain, Expression body)
     | quantifiedExists(str var, str domain, Expression body)
+    | annotated(Expression expr, Type typ)
     | intLit(int intVal)
     | floatLit(str floatRaw)
-    | charLit(str charVal);
+    | boolLit(str boolRaw)
+    | charLit(str charVal)
+    | stringLit(str stringVal);

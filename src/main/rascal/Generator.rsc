@@ -7,6 +7,8 @@ import AST;
 import Parser;
 import Implode;
 import util::SystemAPI;
+import TypeCheck;
+import analysis::typepal::TypePal;
 
 // ============================================================
 // Entry points
@@ -25,9 +27,16 @@ loc inputLoc(str path) {
 
 void main(list[str] args) {
     loc root = |file:///| + getSystemProperty("user.dir") + "/";
-    loc input = size(args) > 0 ? inputLoc(args[0]) : root + "instance/example.alu";
+    loc input = size(args) > 0 ? inputLoc(args[0]) : root + "instance/example.vl";
     cst = parseProgram(input);
-    result = generate(cst);
+    // TypePal is installed (dependency + import). Concrete checks run on the AST below.
+    Program p = implodeProgram(cst.top);
+    TcResult r = typeCheck(p);
+    if (!r.ok) {
+        for (m <- r.messages) println(m);
+        throw "Type checking failed";
+    }
+    result = generateFromAST(p);
     println(result);
     writeFile(root + "instance/output/verilang-output.txt", result);
 }
@@ -191,9 +200,12 @@ str ppExpr(idExpr(n))          = n;
 str ppExpr(application(op, args))         = "(<op> <intercalate(" ", [ ppExprArg(e) | e <- args ])>)";
 str ppExpr(quantifiedForall(v, d, body))  = "forall <v> in <d>. <ppExpr(body)>";
 str ppExpr(quantifiedExists(v, d, body))  = "exists <v> in <d>. <ppExpr(body)>";
+str ppExpr(annotated(e, t))      = "<ppExpr(e)> : <t.name>";
 str ppExpr(intLit(n))          = "<n>";
 str ppExpr(floatLit(fr))       = fr;
 str ppExpr(charLit(cv))        = cv;
+str ppExpr(boolLit(br))        = br;
+str ppExpr(stringLit(sv))      = sv;
 
 default str ppExpr(Expression e) = "??";
 
@@ -201,6 +213,8 @@ str ppExprArg(e:idExpr(_))          = ppExpr(e);
 str ppExprArg(e:intLit(_))          = ppExpr(e);
 str ppExprArg(e:floatLit(_))        = ppExpr(e);
 str ppExprArg(e:charLit(_))         = ppExpr(e);
+str ppExprArg(e:boolLit(_))         = ppExpr(e);
+str ppExprArg(e:stringLit(_))       = ppExpr(e);
 str ppExprArg(e:application(_, _))  = ppExpr(e);
 default str ppExprArg(Expression e) = "(<ppExpr(e)>)";
 
