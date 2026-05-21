@@ -21,18 +21,26 @@ str prettyVType(tFloat()) = "Float";
 str prettyVType(tUser(str n)) = n;
 str prettyVType(tUnknown()) = "unknown";
 
+public str typeName(Type t) {
+  switch (t) {
+    case intType(): return "Int";
+    case boolType(): return "Bool";
+    case charType(): return "Char";
+    case stringType(): return "String";
+    case floatType(): return "Float";
+    case typeId(name): return name;
+  }
+}
+
 VType vtype(Type t) {
   switch (t) {
-    case typeId(name): {
-      switch (name) {
-        case "Int": return tInt();
-        case "Bool": return tBool();
-        case "Char": return tChar();
-        case "String": return tString();
-        case "Float": return tFloat();
-        default: return tUser(name);
-      }
-    }
+    case intType(): return tInt();
+    case boolType(): return tBool();
+    case charType(): return tChar();
+    case stringType(): return tString();
+    case floatType(): return tFloat();
+    case typeId(name): return tUser(name);
+    default: return tUnknown();
   }
 }
 

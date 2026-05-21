@@ -25,7 +25,12 @@ data OperatorDecl
     = operatorDecl(str name, list[Type] types, list[AttributeBlock] attrs);
 
 data Type 
-    = typeId(str name);
+    = intType()
+    | boolType()
+    | charType()
+    | stringType()
+    | floatType()
+    | typeId(str name);
 
 data AttributeBlock 
     = attributeBlock(list[Attribute] attrs);

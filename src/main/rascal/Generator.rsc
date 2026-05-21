@@ -8,6 +8,7 @@ import Parser;
 import Implode;
 import util::SystemAPI;
 import TypeCheck;
+import VeriTypes;
 import analysis::typepal::TypePal;
 
 // ============================================================
@@ -122,14 +123,14 @@ str generateSpace(SpaceDecl decl) {
 }
 
 str generateOperator(OperatorDecl decl) {
-    str sig = intercalate(" -\> ", [ t.name | t <- decl.types ]);
+    str sig = intercalate(" -\> ", [ typeName(t) | t <- decl.types ]);
     str out = "Operator: <decl.name> : <sig>";
     out += generateAttrBlocks(decl.attrs);
     return out + "\n";
 }
 
 str generateVar(VarDecl decl) {
-    str defs = intercalate(", ", [ "<d.name> : <d.typ.name>" | d <- decl.defs ]);
+    str defs = intercalate(", ", [ "<d.name> : <typeName(d.typ)>" | d <- decl.defs ]);
     return "Variables: <defs>\n";
 }
 
@@ -200,7 +201,7 @@ str ppExpr(idExpr(n))          = n;
 str ppExpr(application(op, args))         = "(<op> <intercalate(" ", [ ppExprArg(e) | e <- args ])>)";
 str ppExpr(quantifiedForall(v, d, body))  = "forall <v> in <d>. <ppExpr(body)>";
 str ppExpr(quantifiedExists(v, d, body))  = "exists <v> in <d>. <ppExpr(body)>";
-str ppExpr(annotated(e, t))      = "<ppExpr(e)> : <t.name>";
+str ppExpr(annotated(e, t))      = "<ppExpr(e)> : <typeName(t)>";
 str ppExpr(intLit(n))          = "<n>";
 str ppExpr(floatLit(fr))       = fr;
 str ppExpr(charLit(cv))        = cv;

@@ -40,7 +40,12 @@ syntax OperatorDecl
                     AttributeBlock? attrs "end";
 
 syntax Type 
-    = typeId: Identifier name;
+    = intType:    "Int"
+    | boolType:   "Bool"
+    | charType:   "Char"
+    | stringType: "String"
+    | floatType:  "Float"
+    | typeId:     Identifier name;
 
 // === 5.4 Attributes ===
 
@@ -147,7 +152,8 @@ keyword AllKeywords
     | "defoperator" | "defexpression" | "defvar" | "defdata" | "defer"
     | "forall" | "exists" | "in"
     | "and" | "or" | "neg"
-    | "true" | "false";
+    | "true" | "false"
+    | "Int" | "Bool" | "Char" | "String" | "Float";
 
 keyword StructKeywords 
     = "defmodule" | "using" | "defspace" | "defrule" | "end"
