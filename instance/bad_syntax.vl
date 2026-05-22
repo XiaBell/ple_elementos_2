@@ -1,0 +1,3 @@
+defmodule broken
+defvar x : Int
+end

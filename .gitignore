@@ -1,0 +1,7 @@
+target/
+.kotlin/
+kotlin-app/.gradle/
+kotlin-app/build/
+kotlin-app/bin/
+.idea/
+*.iml

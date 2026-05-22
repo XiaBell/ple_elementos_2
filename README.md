@@ -1,80 +1,97 @@
-# ple_elementos_2
+# VeriLang — Entrega Proyecto 4
 
-Este repositorio es un trabajo con Rascal desarrollando el lenguaje de VeriLang: hay una gramática para programas (archivo de entrada `.vl`), un parser que construye el árbol concreto, pasa al AST (`AST.rsc`) y un módulo `Generator` que recorre ese AST y produce un informe en texto: resumen del módulo (espacios, operadores, variables, reglas `defrule`) y, para cada `defexpression`, muestra la expresión original, pasos de reescritura cuando aplica una regla, y en algunos casos evaluación aritmética simple.
+**María Castilla** · Código: 202315018
 
-Además, antes de generar salida, `Generator` ejecuta un chequeo de tipos (módulo `TypeCheck.rsc`) que valida:
-- tipos base (`Int`, `Bool`, `Char`, `String`) y tipos definidos por el usuario (por `defspace` y `defdata`)
-- anotaciones `expr : Type`
-- regla extra para `defdata`: los elementos listados deben existir y tener el tipo correcto
+Conecta VeriLang (proyecto 3 en Rascal) con una app en **Kotlin**. No hace falta abrir el JSON a mano: eliges un `.vl`, pulsas Ejecutar, y la app hace el resto.
+
+En la carpeta **`instance/`** hay varios programas VeriLang listos para probar (`example.vl`, `bad_syntax.vl`, `bad_data.vl`).
+
+---
 
 ## Requisitos
 
-- **Java** instalado (compatible con Rascal 0.33.x).
-- **Apache Maven**, para compilar y resolver dependencias.
+- Java 11+
+- Maven
 
-## Compilación
+---
 
-Desde la carpeta raíz del repositorio (donde está `pom.xml`):
+## Paso a paso (cómo probarlo)
+
+### 1. Compilar VeriLang (Rascal)
 
 ```bash
+cd /Users/majo/Desktop/GITHUBPROJECTS/ple_elementos_2
 mvn compile
+mvn -q dependency:build-classpath -Dmdep.outputFile=target/ple-cp.txt
 ```
 
-## Ejecución desde la terminal
-
-El intérprete de Rascal necesita las clases compiladas **y** el classpath de las librerías de Maven, no basta con `target/classes`. Un procedimiento habitual es generar el classpath una vez y guardarlo:
+### 2. (Opcional) Probar solo el JSON, sin GUI
 
 ```bash
-mvn -q dependency:build-classpath -Dmdep.outputFile=/tmp/ple_cp.txt
+java -cp "target/classes:$(cat target/ple-cp.txt)" \
+  org.rascalmpl.shell.RascalShell RunnerJson instance/example.vl
+
+cat instance/output/verilang-ast.json
 ```
 
-Luego, **desde la raíz del repositorio** (el código arma rutas de archivos con respecto al directorio de trabajo actual):
+Deberías ver `"parseOk":true` y `"modules":[...]`.
+
+### 3. Abrir la app Kotlin
 
 ```bash
-java -cp "target/classes:$(cat /tmp/ple_cp.txt)" org.rascalmpl.shell.RascalShell Generator
+cd kotlin-app
+./gradlew run
 ```
 
-Comportamiento por defecto:
+En Windows: `gradlew.bat run`.
 
-- Entrada: `instance/example.vl`
-- Salida por **consola** y el mismo contenido en `instance/output/verilang-output.txt` (relativo al directorio de trabajo actual; cada ejecución **sobrescribe** ese archivo). Si corres `java` desde otra carpeta, esa ruta de salida será respecto a esa carpeta.
+### 4. En la ventana
 
-### Probar que la regla de `defdata` se aplica (archivo con errores)
+1. **Buscar** → elige un `.vl` (ruta completa, por ejemplo):
 
-Hay un ejemplo que debe fallar para mostrar mensajes de error de la regla 6:
+   ```
+   /Users/majo/Desktop/GITHUBPROJECTS/ple_elementos_2/instance/example.vl
+   ```
+
+2. **Ejecutar**
+
+---
+
+## Qué debes ver en cada prueba
+
+Usa los archivos de `instance/`:
+
+### `example.vl` (correcto)
+
+- **Parser: OK**
+- **Módulos:** logic-demo, standard-lib, math-utils
+- **Resumen** con espacios, operadores, variables, etc.
+
+### `bad_syntax.vl` (parser mal)
+
+- **Parser: FAIL**
+- Mensaje de error de Rascal debajo (error de parsing)
+
+### `bad_data.vl` (tipos mal)
+
+- **Parser: OK**
+- Sección **Errores de tipos** (2 mensajes sobre defdata)
+
+---
+
+## Atajo (todo en uno)
+
+Desde la raíz del proyecto:
 
 ```bash
-java -cp "target/classes:$(cat /tmp/ple_cp.txt)" org.rascalmpl.shell.RascalShell Generator instance/bad_data.vl
+chmod +x run-gui.sh
+./run-gui.sh
 ```
 
-## Cómo probar con otros archivos `.vl`
+Luego en la ventana: **Buscar** un `.vl` de `instance/` → **Ejecutar**.
 
-El módulo `Generator` admite **un argumento opcional**: la ruta del archivo `.vl`. Puede ser:
+---
 
-1. **Ruta relativa** al directorio de trabajo actual de la terminal (donde estás cuando ejecutas `java`).
-2. **Ruta absoluta** en el disco (cualquier carpeta de tu equipo), por ejemplo en macOS o Linux algo como `/Users/tu_usuario/Escritorio/mi_archivo.vl`, o en Windows algo como `C:/Users/tu_usuario/Documents/mi_archivo.vl` (también sirven barras invertidas; el programa las normaliza).
+## Documentación de entrega
 
-Ejemplo con un archivo dentro del proyecto (`instance/`):
-
-```bash
-cd /ruta/completa/a/ple_elementos_2
-java -cp "target/classes:$(cat /tmp/ple_cp.txt)" org.rascalmpl.shell.RascalShell Generator instance/mi_prueba.vl
-```
-
-Ejemplo con un archivo **fuera** del repositorio, usando ruta absoluta (macOS / Linux):
-
-```bash
-java -cp "target/classes:$(cat /tmp/ple_cp.txt)" org.rascalmpl.shell.RascalShell Generator /Users/tu_usuario/Documentos/verilang/prueba.vl
-```
-
-En la misma terminal puedes usar `$(pwd)` o arrastrar el archivo al terminal para que el sistema pegue la ruta completa.
-
-Ejemplo con otra carpeta **dentro** del mismo proyecto, por ejemplo `pruebas/caso1.vl`:
-
-```bash
-java -cp "target/classes:$(cat /tmp/ple_cp.txt)" org.rascalmpl.shell.RascalShell Generator pruebas/caso1.vl
-```
-
-**Nota:** con rutas **relativas**, si cambias de carpeta con `cd` antes de correr Java, la ruta se interpreta desde **esa** ubicación. Con rutas **absolutas** da igual desde qué carpeta ejecutes el comando.
-
-Si no pasas ningún argumento, el comando equivale a usar `instance/example.vl` (relativo al directorio de trabajo actual).
+[docs/ENTREGA.md](docs/ENTREGA.md)

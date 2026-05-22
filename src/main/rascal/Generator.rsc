@@ -4,16 +4,13 @@ import IO;
 import List;
 import String;
 import AST;
-import Parser;
 import Implode;
 import util::SystemAPI;
 import TypeCheck;
 import VeriTypes;
-import analysis::typepal::TypePal;
+// Chequeo de tipos vía TypeCheck.rsc (no importar analysis::typepal::TypePal aquí).
 
-// ============================================================
-// Entry points
-// ============================================================
+alias Rule = tuple[OperatorApplication lhs, OperatorApplication rhs];
 
 loc inputLoc(str path) {
     str n = replaceAll(path, "\\", "/");
@@ -29,9 +26,7 @@ loc inputLoc(str path) {
 void main(list[str] args) {
     loc root = |file:///| + getSystemProperty("user.dir") + "/";
     loc input = size(args) > 0 ? inputLoc(args[0]) : root + "instance/example.vl";
-    cst = parseProgram(input);
-    // TypePal is installed (dependency + import). Concrete checks run on the AST below.
-    Program p = implodeProgram(cst.top);
+    Program p = loadProgram(input);
     TcResult r = typeCheck(p);
     if (!r.ok) {
         for (m <- r.messages) println(m);
@@ -42,21 +37,10 @@ void main(list[str] args) {
     writeFile(root + "instance/output/verilang-output.txt", result);
 }
 
-str generate(cast) {
-    ast = implodeProgram(cast.top);
-    return generateFromAST(ast);
-}
-
 str generateFromAST(Program prog) {
     rules = collectRules(prog.moduleDef.elements);
     return generateProgram(prog, rules);
 }
-
-// ============================================================
-// Collect rewrite rules
-// ============================================================
-
-alias Rule = tuple[OperatorApplication lhs, OperatorApplication rhs];
 
 list[Rule] collectRules(list[ModuleElement] elems) {
     list[Rule] result = [];
